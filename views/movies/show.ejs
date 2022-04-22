@@ -25,11 +25,6 @@
     div {
       border: none;
     }
-
-    .likeForm {
-      display: flex;
-      justify-content: space-around;
-    }
   </style>
   <link rel="stylesheet" href="/stylesheets/master.css">
 </head>
@@ -58,7 +53,7 @@
                 <option value="<%= sMovie.title %>"></option>
                 <% } %>
             </datalist>
-            <button class="btn btn-sm btn-outline-primary">Search</button>
+            <button class="btn btn-sm btn-outline-dark">Search</button>
           </form>
         </div>
 
@@ -111,34 +106,19 @@
                   <li class="list-group-item">Runtime: <%= movie.runtime %> minutes</li>
                   <li class="list-group-item">
 
-                    <!-- User feedback -->
+                    <!-- User feedback option 2.0 -->
                     <% if(currentUser) {%>
-                      <form class="likeForm" action="/<%= movie._id %>/<%=currentUser._id %>" method="POST">
-                        <div class="form-check">
-                          <select class="form-select" name="isLike" id="likeMovie">
-                            <option selected>Your response</option>
-                            <option value="1">Yes</option>
-                            <option value="2">No</option>
-                          </select>
-                        </div>
-                        <button class="btn btn-sm btn-primary">Save Response</button>
-                      </form>
-                      <% } %>
-
-                        <!-- User feedback option 2.0 -->
-                        <% if(currentUser) {%>
-                          <% if(!isLikedMovie) {%>
-                            <form action="/liked/<%= movie._id %>/<%= currentUser._id %>" method="POST"
-                              class="likeForm">
-                              <button class="btn btn-sm btn-info">Like</button>
-                            </form>
-                            <% } else {%>
-                              <form action="/disliked/<%= movie._id %>/<%= currentUser._id %>" method="POST"
-                                class="likeForm">
-                                <button class="btn btn-sm btn-danger">Dislike</button>
-                              </form>
-                              <% } %>
-                                <% } %>
+                      <% if(!isLikedMovie) {%>
+                        <form action="/liked/<%= movie._id %>/<%= currentUser._id %>" method="POST" class="likeForm">                          
+                          <button class="btn btn-sm btn-info"><%- include("like-svgrepo-com.svg") %> Like</button>
+                        </form>
+                        <% } else {%>
+                          <form action="/disliked/<%= movie._id %>/<%= currentUser._id %>" method="POST"
+                            class="likeForm">
+                            <button class="btn btn-sm btn-danger"> <%-include("dislike-svgrepo-com.svg") %> Dislike</button>
+                          </form>
+                          <% } %>
+                            <% } %>
 
                   </li>
                 </ul>
@@ -206,13 +186,10 @@
                   <% } %>
                     <div class="card-body">
                       <h6 class="card-title">
-                        <%= top5Objects[i].title %>
+                        <a style="color: black; text-decoration: none;" href="/movies/<%= top5Objects[i]._id %>">
+                          <%= top5Objects[i].title %>
+                        </a>
                       </h6>
-                    </div>
-                    <div class="card-footer" style="background-color: transparent;">
-                      <a class="btn btn-outline-primary" href="/movies/<%= top5Objects[i]._id %>">
-                        Details
-                      </a>
                     </div>
             </div>
           </div>

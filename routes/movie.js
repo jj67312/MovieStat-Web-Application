@@ -7,7 +7,10 @@ const querystring = require('querystring');
 const url = require('url');
 
 const findPoster = require('../utils/findPoster');
-const { getRecommendedMovies, getPersonalizedRecommedations } = require('../utils/findRecommendedMovies');
+const {
+  getRecommendedMovies,
+  getPersonalizedRecommedations,
+} = require('../utils/findRecommendedMovies');
 const { isLoggedIn } = require('../middleware');
 
 const getMovieObjects = async function (top5) {
@@ -17,6 +20,16 @@ const getMovieObjects = async function (top5) {
     top5Objects.push(movieObj[0]);
   }
   return top5Objects;
+};
+
+const getPersonalizedMovieObjects = async function (topMovies) {
+  // topMovies is an array of movie titles
+  let topRecommendationsArray = [];
+  for (let movie of topMovies) {
+    const movieObj = await Movie.find({ title: movie });
+    topRecommendationsArray.push(movieObj[0]);
+  }
+  return topRecommendationsArray;
 };
 
 const getMoviePosters = async function (top5) {
@@ -41,36 +54,40 @@ router.get('/', isLoggedIn, async (req, res) => {
   // we have to pass the array likedMovies of current user to the api:
   // first convert that array to json object:
 
-  // --------------------------------------------------
-
   // Here allLikedMovies is an json object
   let movies = [];
   for (let likedMovie of user.likedMovies) {
-    const likedMovieObj = JSON.stringify()
+    const likedMovieObj = JSON.stringify();
     movies.push(likedMovie);
   }
 
   // CALL NEW METHOD:
-  getPersonalizedRecommedations(movies);
+  // All the top movie recommendations are stored in this variable
+  // Its an array of movie titles
+  let topRecommendations = [];
 
-  // const allLikedMoviesObj = JSON.stringify(movies);
-  res.send({movies});
+  const allPersonalizedMovies = await getPersonalizedRecommedations(
+    movies
+  ).then((response) => {
+    // response is an array of movie titles
+    topRecommendations = response;
+  });
+  const image = await Image.findById('6249598dd7ba0919b12480c4');
 
-  // --------------------------------------------------
+  const topRecommendationsObjects = await getPersonalizedMovieObjects(
+    topRecommendations
+  );
+  const topRecommendationsPosters = await getMoviePosters(topRecommendations);
+  
+  // console.log(topRecommendationsObjects[0].title);
 
-  // 19/04/2022 10:09 PM
-  /*
-      user --> likedMovies
-      likedMovies --> json format:
-       {
-         'movies' : [
-            'Avatar',
-            'Spider-Man'
-        ]
-      }
-  */
-
-  // res.render('movies/index', { allMovies });
+  // res.send({ topRecommendationsObjects });
+  res.render('movies/index', {
+    allMovies,
+    image,
+    topRecommendationsObjects,
+    topRecommendationsPosters,
+  });
 });
 
 router.get('/search', async (req, res) => {
@@ -114,12 +131,12 @@ router.get('/:id', isLoggedIn, async (req, res) => {
 
   // Find if the current movie is a liked Movie
   const currUser = req.user;
-  console.log('This is ', currUser.username);
+  // console.log('This is ', currUser.username);
   const isLikedMovie = currUser.likedMovies.includes(movie.title);
   if (isLikedMovie) {
-    console.log('Yes this movie is liked by ', currUser.username);
+    // console.log('Yes this movie is liked by ', currUser.username);
   } else {
-    console.log('Did not give feedback ', currUser.username);
+    // console.log('Did not give feedback ', currUser.username);
   }
 
   res.render('movies/show.ejs', {

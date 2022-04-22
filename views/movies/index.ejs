@@ -10,20 +10,9 @@
     integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <style>
-    .poster {
-      height: 400px;
-      display: flex;
-      justify-content: center;
-      /* align-items:center */
-    }
-
-    .poster img {
+    img {
       height: 100%;
       width: auto;
-    }
-
-    div {
-      border: none;
     }
   </style>
   <link rel="stylesheet" href="/stylesheets/master.css">
@@ -54,11 +43,11 @@
           <form action="/movies/search" class="d-flex">
             <input class="form-control me-2" name="searchMovie" type="text" id="searchMovie" list="movieList">
             <datalist id="movieList">
-              <% for(let sMovie of movies) {%>
+              <% for(let sMovie of allMovies) {%>
                 <option value="<%= sMovie.title %>"></option>
                 <% } %>
             </datalist>
-            <button class="btn btn-sm btn-outline-primary">Search</button>
+            <button class="btn btn-sm btn-outline-dark">Search</button>
           </form>
         </div>
 
@@ -81,26 +70,36 @@
 
     <main class="container mt-5 mb-5">
       <%- include('../partials/flash.ejs') %>
-        <div class="row">
-          <h1>RECOMMENDED MOVIES</h1>
-          <% count=1 %>
-            <% for(let movie of movies) {%>
-              <% if(count <=10) {%>
-                <div class="col-md-4 p-2">
-                  <div class="poster card h-100">
-                    <img src="http://image.tmdb.org/t/p/w500/<%= movie.posterPath%>" alt="">
-                    <div class="card-body">
-                      <h5 class="card-title">
-                        <%= movie.title %>
-                      </h5>
-                      <a class="btn btn-sm btn-info" href="/movies/<%= movie._id %>">Details</a>
-                    </div>
-                  </div>
-                </div>
-                <% } %>
-                  <% count=count + 1 %>
+
+        <!-- --------------------------------------------------------------------------------------------- -->
+        <!-- PERSONALIZED -->
+        <h1>PERSONALIZED RECOMMENDATIONS</h1>
+        <div class="row row-cols-1 row-cols-md-3">
+          <% for(let i=0; i < 20; i++) {%>
+            <div class="col p-2">
+              <div class="card poster">
+                <% if(topRecommendationsPosters[i]) {%>
+                  <img src="http://image.tmdb.org/t/p/w500/<%= topRecommendationsPosters[i] %>"
+                    class="card-img-top img-fluid" alt="...">
+                  <% } else {%>
+                    <img src="data:image/<%=image.img.contentType%>;base64,
+                  <%=image.img.data.toString('base64')%>" alt="" class="card-img-top img-fluid">
                     <% } %>
+                      <div class="card-body">
+                        <h6 class="card-title">
+                          <a style="color: black; text-decoration: none;" href="/movies/<%= topRecommendationsObjects[i]._id %>">
+                            <%= topRecommendationsObjects[i].title %>
+                          </a>
+                        </h6>
+                      </div>
+              </div>
+            </div>
+            <% } %>
         </div>
+
+        <!-- --------------------------------------------------------------------------------------------- -->
+
+
     </main>
 
 
