@@ -11,7 +11,6 @@ const flash = require('connect-flash');
 const User = require('./models/user');
 const Movie = require('./models/movies');
 
-const findPoster = require('./utils/findPoster');
 
 // Passport setting
 const passport = require('passport');
