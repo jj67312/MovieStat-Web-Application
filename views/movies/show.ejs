@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <style>
     .poster {
-      height: 400px;
+      height: 430px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -20,6 +20,10 @@
     .poster img {
       height: 100%;
       width: auto;
+    }
+
+    .likeForm {
+      display: flex;
     }
 
     div {
@@ -31,7 +35,7 @@
 
 <body class="d-flex flex-column min-vh-100">
 
-  <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light ">
+  <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
       <a class="navbar-brand" href="/movies">MovieStat</a>
 
@@ -81,41 +85,44 @@
 
             <div class="row g-0">
               <div class="poster col-md-3">
-                <img src="http://image.tmdb.org/t/p/w500/<%= movie.posterPath %>" class="card-img-top img-fluid"
-                  alt="...">
+                <img src="http://image.tmdb.org/t/p/w500/<%= posterPath %>" class="card-img-top img-fluid" alt="...">
               </div>
 
               <div class="col-md-9">
                 <div class="card-body">
-                  <h5 class="card-title">
-                    <%= movie.title %>
-                  </h5>
+                  <h3 class="card-title likeForm">
+                    <%= movie.title %> 
+                  </h3>
                   <p class="card-text text-muted">
                     <%= movie.overview %>
                   </p>
                 </div>
                 <ul class="list-group list-group-flush">
-                  <li class="list-group-item">Tagline: <%= movie.tagline %>
+                  <li class="list-group-item lis">Tagline: <%= movie.tagline %>
                   </li>
-                  <li class="list-group-item">Budget: $<%= movie.budget %>
+                  <li class="list-group-item lis">Budget: $<%= movie.budget %>
                   </li>
-                  <li class="list-group-item">Release date: <%= movie.release_date %>
+                  <li class="list-group-item lis">Release date: <%= movie.release_date %>
                   </li>
-                  <li class="list-group-item">Revenue: $<%= movie.revenue %>
+                  <li class="list-group-item lis">Revenue: $<%= movie.revenue %>
                   </li>
-                  <li class="list-group-item">Runtime: <%= movie.runtime %> minutes</li>
-                  <li class="list-group-item">
+                  <li class="list-group-item lis">Runtime: <%= movie.runtime %> minutes</li>
+                  <li class="list-group-item lis">
 
                     <!-- User feedback option 2.0 -->
                     <% if(currentUser) {%>
                       <% if(!isLikedMovie) {%>
-                        <form action="/liked/<%= movie._id %>/<%= currentUser._id %>" method="POST" class="likeForm">                          
-                          <button class="btn btn-sm btn-info"><%- include("like-svgrepo-com.svg") %> Like</button>
+                        <form action="/liked/<%= movie._id %>/<%= currentUser._id %>" method="POST" class="likeForm">
+                          <button class="btn btn-sm btn-light">
+                            <%- include("like-svgrepo-com.svg") %> Like
+                          </button>
                         </form>
                         <% } else {%>
                           <form action="/disliked/<%= movie._id %>/<%= currentUser._id %>" method="POST"
                             class="likeForm">
-                            <button class="btn btn-sm btn-danger"> <%-include("dislike-svgrepo-com.svg") %> Dislike</button>
+                            <button class="btn btn-sm btn-light">
+                              <%-include("dislike-svgrepo-com.svg") %> Dislike
+                            </button>
                           </form>
                           <% } %>
                             <% } %>

@@ -10,6 +10,26 @@
     integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <style>
+    html {
+      background-color: white;
+      color: black;
+    }
+
+    .dark-mode {
+      background-color: black;
+      color: white;
+    }
+
+    nav .dark-mode {
+      background-color: black;
+      color: white;
+    }
+
+    .dark-mode .card{
+      background-color: black;
+      color: white;
+    }
+
     .poster {
       height: 300px;
       display: flex;
@@ -27,7 +47,7 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100">
-  <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light ">
+  <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
       <a class="navbar-brand" href="/movies">MovieStat</a>
 
@@ -63,6 +83,7 @@
               <a class="nav-link" href="/logout">Logout</a>
               <a class="nav-link" href="/likedMovies/<%= currentUser._id %>">Liked Movies</a>
               <% } %>
+                <!-- <button onclick="myFunction()">Toggle dark mode</button> -->
         </div>
       </div>
     </div>
@@ -75,7 +96,8 @@
         <div class="card p-2 border-0">
           <div class="row">
             <div class="col-md-3 poster">
-              <img class="card-img-top img-fluid" src="http://image.tmdb.org/t/p/w500/<%= likedMovie.posterPath%>" alt="">
+              <img class="card-img-top img-fluid" src="http://image.tmdb.org/t/p/w500/<%= likedMovie.posterPath%>"
+                alt="">
             </div>
             <div class="col-md-9">
               <div class="card-body d-flex flex-column h-100">
@@ -103,6 +125,13 @@
       crossorigin="anonymous"></script>
     <script src="/javascripts/validateForm.js"></script>
 
+    <!-- <script>
+      function myFunction() {
+         var element = document.body;
+         element.classList.toggle("dark-mode");
+
+      }
+      </script> -->
 </body>
 
 </html>

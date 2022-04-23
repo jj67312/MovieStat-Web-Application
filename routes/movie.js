@@ -65,7 +65,6 @@ router.get('/', isLoggedIn, async (req, res) => {
   // All the top movie recommendations are stored in this variable
   // Its an array of movie titles
   let topRecommendations = [];
-
   const allPersonalizedMovies = await getPersonalizedRecommedations(
     movies
   ).then((response) => {
@@ -79,9 +78,6 @@ router.get('/', isLoggedIn, async (req, res) => {
   );
   const topRecommendationsPosters = await getMoviePosters(topRecommendations);
   
-  // console.log(topRecommendationsObjects[0].title);
-
-  // res.send({ topRecommendationsObjects });
   res.render('movies/index', {
     allMovies,
     image,
@@ -131,13 +127,7 @@ router.get('/:id', isLoggedIn, async (req, res) => {
 
   // Find if the current movie is a liked Movie
   const currUser = req.user;
-  // console.log('This is ', currUser.username);
   const isLikedMovie = currUser.likedMovies.includes(movie.title);
-  if (isLikedMovie) {
-    // console.log('Yes this movie is liked by ', currUser.username);
-  } else {
-    // console.log('Did not give feedback ', currUser.username);
-  }
 
   res.render('movies/show.ejs', {
     movie,

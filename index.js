@@ -9,6 +9,9 @@ const flash = require('connect-flash');
 
 // User Model
 const User = require('./models/user');
+const Movie = require('./models/movies');
+
+const findPoster = require('./utils/findPoster');
 
 // Passport setting
 const passport = require('passport');
@@ -69,7 +72,6 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use((req, res, next) => {
-  // console.log(req.session);
   res.locals.currentUser = req.user;
   res.locals.success = req.flash('success');
   res.locals.error = req.flash('error');
@@ -86,7 +88,7 @@ app.post('/getLikedMovies', async (req, res) => {
   // Here we will want to have an array/object of all the tags
   const { movieName } = req.body;
   console.log(movieName);
-  const movieTags = await MovieTag.find({title: movieName});
+  const movieTags = await MovieTag.find({ title: movieName });
   res.render('movietags', { movieTags });
 });
 
