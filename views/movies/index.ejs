@@ -54,8 +54,8 @@
             <a class="nav-link" href="/login">Login</a>
             <a class="nav-link" href="/register">Register</a>
             <% } else{%>
-              <a class="nav-link" href="/logout">Logout</a>
               <a class="nav-link" href="/likedMovies/<%= currentUser._id %>">Liked Movies</a>
+              <a class="nav-link" href="/logout">Logout</a>
               <% } %>
         </div>
       </div>
@@ -77,12 +77,15 @@
             <div class="col p-2">
               <div class="card poster m-2">
                 <% if(topRecommendationsPosters[i]) {%>
+                  PHEHELA
                   <img src="http://image.tmdb.org/t/p/w500/<%= topRecommendationsPosters[i] %>"
                     class="card-img-top img-fluid" alt="...">
                   <% } else if(topRecommendationsObjects[i].posterPath) {%>
-                    <img src="http://image.tmdb.org/t/p/w500/<%= topRecommendationsPosters[i] %>"
+                    DUSRA
+                    <img src="http://image.tmdb.org/t/p/w500/<%= topRecommendationsObjects[i].posterPath %>"
                       class="card-img-top img-fluid" alt="">
                     <% } else {%>
+                      MEH
                       <img src="data:image/<%=image.img.contentType%>;base64,
                   <%=image.img.data.toString('base64')%>" alt="" class="card-img-top img-fluid">
                       <% } %>

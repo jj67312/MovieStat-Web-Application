@@ -26,21 +26,34 @@ const getPersonalizedMovieObjects = async function (topMovies) {
   // topMovies is an array of movie titles
   let topRecommendationsArray = [];
   for (let movie of topMovies) {
-    const movieObj = await Movie.find({ title: movie });
-    topRecommendationsArray.push(movieObj[0]);
+    const movieObj = await Movie.findOne({ title: movie });
+    topRecommendationsArray.push(movieObj);
   }
   return topRecommendationsArray;
 };
 
 const getMoviePosters = async function (top5) {
   const top5Posters = [];
+  // console.log(top5);
   for (let topMovie of top5) {
-    const movieObj = await Movie.find({ title: topMovie });
-    const posterPath = await findPoster(movieObj[0].id);
+    const movieObj = await Movie.findOne({ title: topMovie });
+    // console.log(`The movie is ${movieObj.title}`);
+    const posterPath = await findPoster(movieObj.id);
     top5Posters.push(posterPath);
   }
   return top5Posters;
 };
+
+// function to remove duplicates from an array
+function arrayUnique(array) {
+  var a = array.concat();
+  for (var i = 0; i < a.length; ++i) {
+    for (var j = i + 1; j < a.length; ++j) {
+      if (a[i] === a[j]) a.splice(j--, 1);
+    }
+  }
+  return a;
+}
 
 // ROUTES:
 
@@ -55,11 +68,32 @@ router.get('/', isLoggedIn, async (req, res) => {
   // first convert that array to json object:
 
   // Here allLikedMovies is an json object
-  let movies = [];
+
+  let allLikedMovies = [];
   for (let likedMovie of user.likedMovies) {
     const likedMovieObj = JSON.stringify();
-    movies.push(likedMovie);
+    allLikedMovies.push(likedMovie);
   }
+
+  let allWatchedMovies = [];
+  console.log('ALL WATCHED MOVIES:');
+  for (let watchedMovie of user.watchedMovies) {
+    // console.log(watchedMovie);
+    // console.log(typeof watchedMovie);
+    allWatchedMovies.push(watchedMovie);
+  }
+
+  console.log('LIKED MOVIES:');
+  console.log(allLikedMovies);
+
+  allWatchedMovies = arrayUnique(allWatchedMovies);
+  console.log('WATCHED MOVIES:');
+  console.log(allWatchedMovies);
+
+  // Now merge the arrays allLikedMovies and allWatchedMovies
+  let movies = arrayUnique(allLikedMovies.concat(allWatchedMovies));
+  console.log('MOVIES ARRAY:');
+  console.log(movies);
 
   // CALL NEW METHOD:
   // All the top movie recommendations are stored in this variable
@@ -77,13 +111,19 @@ router.get('/', isLoggedIn, async (req, res) => {
     topRecommendations
   );
   const topRecommendationsPosters = await getMoviePosters(topRecommendations);
-  
-  res.render('movies/index', {
-    allMovies,
-    image,
-    topRecommendationsObjects,
-    topRecommendationsPosters,
-  });
+
+  if (user.likedMovies.length !== 0 || user.watchedMovies.length !== 0) {
+    console.log('Has some data available');
+    res.render('movies/index', {
+      allMovies,
+      image,
+      topRecommendationsObjects,
+      topRecommendationsPosters,
+    });
+  } else {
+    console.log('No data');
+    res.render('users/newUser', { user, allMovies });
+  }
 });
 
 router.get('/search', async (req, res) => {
@@ -103,6 +143,12 @@ router.get('/:id', isLoggedIn, async (req, res) => {
   });
   const posterPath = await findPoster(movie.id);
   const image = await Image.findById('6249598dd7ba0919b12480c4');
+
+  // TRYING IF USERS SEARCH QUERY CAN BE TRACKED AS WELL
+  const userName = req.user.username;
+  const user = await User.findOne({ username: userName });
+  user.watchedMovies.push(movie.title);
+  await user.save();
 
   let top5 = [];
   const recommendedMovies = await getRecommendedMovies(movie.title).then(

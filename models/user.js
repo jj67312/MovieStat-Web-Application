@@ -9,6 +9,12 @@ const UserSchema = new Schema({
     required: true,
     unique: true,
   },
+  watchedMovies: [
+    {
+      type: String,
+      ref: 'Movie',
+    },
+  ],
   likedMovies: [
     {
       type: String,

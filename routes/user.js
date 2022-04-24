@@ -60,26 +60,6 @@ router.get('/logout', (req, res) => {
   res.redirect('/login');
 });
 
-// user feedback
-router.post('/:movieId/:id', async (req, res) => {
-  const { movieId, id } = req.params;
-  const username = req.user.username;
-  const user = await User.findById(id);
-  const movie = await Movie.findById(movieId);
-  const { isLike } = req.body;
-
-  if (isLike === '1') {
-    user.likedMovies.push(movie.title);
-    await user.save();
-  }
-
-  if (isLike == '0') {
-    const index = user.likedMovies.indexOf(movie.title);
-    console.log('The index of the like movies = ', index);
-  }
-  res.send(req.body);
-});
-
 // user feedback 2.0
 router.post('/liked/:movieId/:id', async (req, res) => {
   const { movieId, id } = req.params;
@@ -102,11 +82,7 @@ router.post('/disliked/:movieId/:id', async (req, res) => {
   if (index > -1) {
     user.likedMovies.splice(index, 1);
   }
-  // console.log('The disliked movie is: ', movie.title);
-  // console.log('The liked movies are:');
-  // console.log(user.likedMovies);
   await user.save();
-
   res.redirect(`/movies/${movieId}`);
 });
 
