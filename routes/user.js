@@ -98,7 +98,37 @@ router.get('/likedMovies/:id', async (req, res) => {
     let movie = await Movie.findOne({ title: likedMovie });
     allLikedMovies.push(movie);
   }
-  res.render('users/likedMovies', { user, movies, allLikedMovies });
+
+  // find all watched movies by the current user:
+  let allWatchedMovies = [];
+  for (let watchedMovie of user.watchedMovies) {
+    let movie = await Movie.findOne({ title: watchedMovie });
+    allWatchedMovies.push(movie);
+  }
+
+  allWatchedMovies = allWatchedMovies.reverse();
+
+  res.render('users/likedMovies', {
+    user,
+    movies,
+    allLikedMovies,
+    allWatchedMovies,
+  });
+});
+
+// user feedback to remove watched movies:
+router.post('/removeWatchedMovies/:movieId/:id', async (req, res) => {
+  const { movieId, id } = req.params;
+  const user = await User.findById(id);
+  const currentMovie = await Movie.findById(movieId);
+
+  // now remove the currentMovie object from the watchedMovies array of user
+  const index = user.watchedMovies.indexOf(currentMovie.title);
+  if (index > -1) {
+    user.watchedMovies.splice(index, 1);
+  }
+  await user.save();
+  res.redirect(`/likedMovies/${id}`);
 });
 
 module.exports = router;
