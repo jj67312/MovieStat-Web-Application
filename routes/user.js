@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
 const Movie = require('../models/movies');
+const Poster = require('../models/posters');
 const catchAsync = require('../utils/catchAsync');
 const passport = require('passport');
 
@@ -106,6 +107,29 @@ router.get('/likedMovies/:id', async (req, res) => {
     allWatchedMovies.push(movie);
   }
 
+  let allLikedMoviesPosters = [];
+  for (let movie of allLikedMovies) {
+    const posterObj = await Poster.findOne({ Title: movie.title });
+    if (!posterObj) {
+      allLikedMoviesPosters.push('');
+    } else {
+      allLikedMoviesPosters.push(posterObj.Poster);
+    }
+  }
+
+  let allWatchedMoviesPosters = [];
+  for (let movie of allWatchedMovies) {
+    const posterObj = await Poster.findOne({ Title: movie.title });
+    if (!posterObj) {
+      allWatchedMoviesPosters.push('');
+    } else {
+      allWatchedMoviesPosters.push(posterObj.Poster);
+    }
+  }
+
+  const numOfLikedMovies = allLikedMovies.length;
+  const numOfWatchedMovies = allWatchedMovies.length;
+
   allWatchedMovies = allWatchedMovies.reverse();
 
   res.render('users/likedMovies', {
@@ -113,6 +137,10 @@ router.get('/likedMovies/:id', async (req, res) => {
     movies,
     allLikedMovies,
     allWatchedMovies,
+    allLikedMoviesPosters,
+    allWatchedMoviesPosters,
+    numOfLikedMovies,
+    numOfWatchedMovies,
   });
 });
 
@@ -123,11 +151,16 @@ router.post('/removeWatchedMovies/:movieId/:id', async (req, res) => {
   const currentMovie = await Movie.findById(movieId);
 
   // now remove the currentMovie object from the watchedMovies array of user
+  console.log('Before deletion');
+  console.log(user.watchedMovies);
+
   const index = user.watchedMovies.indexOf(currentMovie.title);
   if (index > -1) {
     user.watchedMovies.splice(index, 1);
   }
   await user.save();
+  console.log('After deletion:');
+  console.log(user.watchedMovies);
   res.redirect(`/likedMovies/${id}`);
 });
 

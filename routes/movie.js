@@ -2,6 +2,7 @@ const express = require('express');
 const Image = require('../models/image');
 const Movie = require('../models/movies');
 const User = require('../models/user');
+const Poster = require('../models/posters');
 const router = express.Router();
 const querystring = require('querystring');
 const url = require('url');
@@ -55,6 +56,16 @@ function arrayUnique(array) {
   return a;
 }
 
+// function to get the movie poster using the movie title from the Poster Schema
+const getPosters = async function (movieTitle) {
+  // get the movieTitle as parameter and find the poster from the Poster Schema
+  // console.log(movieTitle);
+  const posterObj = await Poster.findOne({ Title: movieTitle });
+  // console.log(posterObj);
+  console.log('The movie title is ', posterObj.Title);
+  console.log('The poster path is ', posterObj.Poster);
+};
+
 // ROUTES:
 
 // Home page:
@@ -107,6 +118,21 @@ router.get('/', isLoggedIn, async (req, res) => {
   });
   const image = await Image.findById('6249598dd7ba0919b12480c4');
 
+  // Find the posters for all the movies in the movies array:
+  let allPosters = [];
+  for (let movie of topRecommendations) {
+    console.log(movie);
+    const posterObj = await Poster.findOne({ Title: movie });
+    if (!posterObj) {
+      allPosters.push('');
+    } else {
+      console.log(posterObj.Title);
+      console.log(posterObj.Poster);
+      console.log();
+      allPosters.push(posterObj.Poster);
+    }
+  }
+
   const topRecommendationsObjects = await getPersonalizedMovieObjects(
     topRecommendations
   );
@@ -119,6 +145,7 @@ router.get('/', isLoggedIn, async (req, res) => {
       image,
       topRecommendationsObjects,
       topRecommendationsPosters,
+      allPosters,
     });
   } else {
     console.log('No data');
@@ -142,12 +169,14 @@ router.get('/:id', isLoggedIn, async (req, res) => {
     populate: { path: 'author' },
   });
   const posterPath = await findPoster(movie.id);
+  const posterPath2 = await Poster.findOne({ Title: movie.title });
   const image = await Image.findById('6249598dd7ba0919b12480c4');
 
   // TRYING IF USERS SEARCH QUERY CAN BE TRACKED AS WELL
   const userName = req.user.username;
   const user = await User.findOne({ username: userName });
   user.watchedMovies.push(movie.title);
+  user.watchedMovies = arrayUnique(user.watchedMovies);
   await user.save();
 
   let top5 = [];
@@ -175,13 +204,28 @@ router.get('/:id', isLoggedIn, async (req, res) => {
   const currUser = req.user;
   const isLikedMovie = currUser.likedMovies.includes(movie.title);
 
+
+  // Find the posters for all the movies in the movies array:
+  let allPosters = [];
+  for (let movie of top5Objects) {
+    const title = movie.title
+    const posterObj = await Poster.findOne({ Title: title});
+    if (!posterObj) {
+      allPosters.push('');
+    } else {
+      allPosters.push(posterObj.Poster);
+    }
+  }
+
   res.render('movies/show.ejs', {
     movie,
     posterPath,
+    posterPath2,
     image,
     movies,
     top5Objects,
     top5Posters,
+    allPosters,
     isLikedMovie,
   });
 });

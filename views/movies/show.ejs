@@ -49,7 +49,7 @@
           <a class="nav-link" href="/movies">Home</a>
         </div>
 
-        <div class="navbar-nav mx-auto">
+        <div class="navbar-nav mx-auto me-2">
           <form action="/movies/search" class="d-flex">
             <input class="form-control me-2" name="searchMovie" type="text" id="searchMovie" list="movieList">
             <datalist id="movieList">
@@ -68,8 +68,10 @@
             <a class="nav-link" href="/login">Login</a>
             <a class="nav-link" href="/register">Register</a>
             <% } else{%>
+              <a class="nav-link me-3" href="/likedMovies/<%= currentUser._id %>">
+                <%= currentUser.username %>
+              </a>
               <a class="nav-link" href="/logout">Logout</a>
-              <a class="nav-link" href="/likedMovies/<%= currentUser._id %>">Liked Movies</a>
               <% } %>
         </div>
       </div>
@@ -85,13 +87,18 @@
 
             <div class="row g-0">
               <div class="poster col-md-3">
-                <img src="http://image.tmdb.org/t/p/w500/<%= posterPath %>" class="card-img-top img-fluid" alt="...">
+                
+                  <%  if(posterPath2) {%>
+                    SECOND
+                    <img src="<%= posterPath2.Poster %>" class="card-img-top img-fluid"
+                      alt="...">
+                    <% } %>
               </div>
 
               <div class="col-md-9">
                 <div class="card-body">
                   <h3 class="card-title likeForm">
-                    <%= movie.title %> 
+                    <%= movie.title %>
                   </h3>
                   <p class="card-text text-muted">
                     <%= movie.overview %>
@@ -185,19 +192,30 @@
           <div class="col">
             <div class="card h-100">
               <% if(top5Posters[i]) {%>
+                FIRST
                 <img src="http://image.tmdb.org/t/p/w500/<%= top5Posters[i] %>" class="card-img-top img-fluid"
                   alt="...">
-                <% } else{%>
-                  <img src="data:image/<%=image.img.contentType%>;base64,
+
+                <% } else if(top5Objects[i].posterPath) {%>
+                  SECOND
+                  <img src="http://image.tmdb.org/t/p/w500/<%= top5Objects[i].posterPath %>"
+                    class="card-img-top img-fluid" alt="...">
+
+                  <% } else if(allPosters[i]) {%> 
+                    THIRD
+                    <img src="http://image.tmdb.org/t/p/w500/<%= allPosters[i] %>"
+                    class="card-img-top img-fluid" alt="...">
+                  <% } else{%>
+                    <img src="data:image/<%=image.img.contentType%>;base64,
                 <%=image.img.data.toString('base64')%>" alt="" class="card-img-top img-fluid">
-                  <% } %>
-                    <div class="card-body">
-                      <h6 class="card-title">
-                        <a style="color: black; text-decoration: none;" href="/movies/<%= top5Objects[i]._id %>">
-                          <%= top5Objects[i].title %>
-                        </a>
-                      </h6>
-                    </div>
+                    <% } %>
+                      <div class="card-body">
+                        <h6 class="card-title">
+                          <a style="color: black; text-decoration: none;" href="/movies/<%= top5Objects[i]._id %>">
+                            <%= top5Objects[i].title %>
+                          </a>
+                        </h6>
+                      </div>
             </div>
           </div>
 
