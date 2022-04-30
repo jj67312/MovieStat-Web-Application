@@ -164,4 +164,24 @@ router.post('/removeWatchedMovies/:movieId/:id', async (req, res) => {
   res.redirect(`/likedMovies/${id}`);
 });
 
+// user feedback to remove liked movies from user history page:
+router.post('/removeLikedMovies/:movieId/:id', async (req, res) => {
+  const { movieId, id } = req.params;
+  const user = await User.findById(id);
+  const currentMovie = await Movie.findById(movieId);
+
+  // now remove the currentMovie object from the watchedMovies array of user
+  console.log('Before deletion');
+  console.log(user.likedMovies);
+
+  const index = user.likedMovies.indexOf(currentMovie.title);
+  if (index > -1) {
+    user.likedMovies.splice(index, 1);
+  }
+  await user.save();
+  console.log('After deletion:');
+  console.log(user.likedMovies);
+  res.redirect(`/likedMovies/${id}`);
+});
+
 module.exports = router;

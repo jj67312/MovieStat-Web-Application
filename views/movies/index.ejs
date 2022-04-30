@@ -40,7 +40,7 @@
 
 <body class="d-flex flex-column min-vh-100">
 
-  <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light  ">
+  <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark  ">
     <div class="container-fluid">
       <a class="navbar-brand" href="/movies">MovieStat</a>
 
@@ -62,7 +62,7 @@
                 <option value="<%= sMovie.title %>"></option>
                 <% } %>
             </datalist>
-            <button class="btn btn-sm btn-outline-dark">Search</button>
+            <button class="btn btn-sm btn-outline-light">Search</button>
           </form>
         </div>
 
@@ -106,20 +106,20 @@
               <div class="col-md-3 poster">
 
                 <% if(topRecommendationsObjects[i].posterPath) {%>
-                  FIRST
+                  <!-- FIRST -->
                   <img class="card-img-top img-fluid"
                     src="http://image.tmdb.org/t/p/w500/<%= topRecommendationsObjects[i].posterPath%>" alt="">
 
                   <% } else if(topRecommendationsPosters[i]) {%>
-                    SECOND
+                    <!-- SECOND -->
                     <img class="card-img-top img-fluid" src="http://image.tmdb.org/t/p/w500/<%= topRecommendationsPosters[i]%>" alt="">
 
                     <% } else if(allPosters[i]) {%>
-                      THIRD
+                      <!-- FOURTH -->
                       <img src="<%= allPosters[i] %>" class="card-img-top img-fluid" alt="">
 
                       <% } else {%>
-                        FOURTH
+                        <!-- DEFAULT -->
                         <img src="data:image/<%=image.img.contentType%>;base64,
                       <%=image.img.data.toString('base64')%>" alt="" class="card-img-top img-fluid">
                         <% } %>

@@ -29,13 +29,18 @@
     div {
       border: none;
     }
+
+    svg{
+      color: white;
+    }
   </style>
   <link rel="stylesheet" href="/stylesheets/master.css">
+  <link rel="stylesheet" href="/stylesheets/stars.css">
 </head>
 
 <body class="d-flex flex-column min-vh-100">
 
-  <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
+  <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
       <a class="navbar-brand" href="/movies">MovieStat</a>
 
@@ -57,7 +62,7 @@
                 <option value="<%= sMovie.title %>"></option>
                 <% } %>
             </datalist>
-            <button class="btn btn-sm btn-outline-dark">Search</button>
+            <button class="btn btn-sm btn-outline-light">Search</button>
           </form>
         </div>
 
@@ -87,11 +92,12 @@
 
             <div class="row g-0">
               <div class="poster col-md-3">
-                
-                  <%  if(posterPath2) {%>
-                    SECOND
-                    <img src="<%= posterPath2.Poster %>" class="card-img-top img-fluid"
-                      alt="...">
+                <% if(posterPath) {%>
+                  <!-- FIRST -->
+                  <img src="http://image.tmdb.org/t/p/w500/<%= posterPath %>" class="card-img-top img-fluid" alt="...">
+                  <% }else if(posterPath2) {%>
+                    <!-- SECOND -->
+                    <img src="<%= posterPath2.Poster %>" class="card-img-top img-fluid" alt="...">
                     <% } %>
               </div>
 
@@ -105,29 +111,34 @@
                   </p>
                 </div>
                 <ul class="list-group list-group-flush">
-                  <li class="list-group-item lis">Tagline: <%= movie.tagline %>
+                  <li class="list-group-item lis" style="background-color: black; color:white;">Tagline: <%=
+                      movie.tagline %>
                   </li>
-                  <li class="list-group-item lis">Budget: $<%= movie.budget %>
+                  <li class="list-group-item lis" style="background-color: black; color:white;">Budget: $<%=
+                      movie.budget %>
                   </li>
-                  <li class="list-group-item lis">Release date: <%= movie.release_date %>
+                  <li class="list-group-item lis" style="background-color: black; color:white;">Release date: <%=
+                      movie.release_date %>
                   </li>
-                  <li class="list-group-item lis">Revenue: $<%= movie.revenue %>
+                  <li class="list-group-item lis" style="background-color: black; color:white;">Revenue: $<%=
+                      movie.revenue %>
                   </li>
-                  <li class="list-group-item lis">Runtime: <%= movie.runtime %> minutes</li>
-                  <li class="list-group-item lis">
+                  <li class="list-group-item lis" style="background-color: black; color:white;">Runtime: <%=
+                      movie.runtime %> minutes</li>
+                  <li class="list-group-item lis" style="background-color: black; color:white;">
 
                     <!-- User feedback option 2.0 -->
                     <% if(currentUser) {%>
                       <% if(!isLikedMovie) {%>
                         <form action="/liked/<%= movie._id %>/<%= currentUser._id %>" method="POST" class="likeForm">
-                          <button class="btn btn-sm btn-light">
+                          <button class="btn btn-sm btn-dark" style="background-color: transparent;">
                             <%- include("like-svgrepo-com.svg") %> Like
                           </button>
                         </form>
                         <% } else {%>
                           <form action="/disliked/<%= movie._id %>/<%= currentUser._id %>" method="POST"
                             class="likeForm">
-                            <button class="btn btn-sm btn-light">
+                            <button class="btn btn-sm" style="background-color: transparent;">
                               <%-include("dislike-svgrepo-com.svg") %> Dislike
                             </button>
                           </form>
@@ -146,13 +157,31 @@
           <% if(currentUser) {%>
             <h2>Leave a Review</h2>
             <form action="/movies/<%= movie._id %>/reviews" method="POST" class="mb-3 validated-form" novalidate>
-              <div class="mb-3">
+              <!-- <div class="mb-3">
                 <label class="form-label" for="rating">Rating: </label>
-                <input class="form-range" min="1" max="5" type="range" name="review[rating]" id="rating">
-              </div>
+                <input style="accent-color: #F55050;" class="form-range" min="1" max="5" type="range"
+                  name="review[rating]" id="rating">
+              </div> -->
               <div class="mb-3">
-                <label class="form-label" for="body">Review: </label>
-                <textarea required class="form-control" name="review[body]" id="body" cols="30" rows="3"></textarea>
+                <fieldset class="starability-basic">
+                  <legend>First rating:</legend>
+                  <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+                  <label for="first-rate1" title="Terrible">1 star</label>
+                  <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+                  <label for="first-rate2" title="Not good">2 stars</label>
+                  <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+                  <label for="first-rate3" title="Average">3 stars</label>
+                  <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+                  <label for="first-rate4" title="Very good">4 stars</label>
+                  <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+                  <label for="first-rate5" title="Amazing">5 stars</label>
+                </fieldset>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label" for="body">Review text: </label>
+                <textarea required class="form-control" name="review[body]"
+                  style="background-color: black; color: white;" id="body" cols="30" rows="3"></textarea>
                 <div class="valid-feedback">
                   Looks good!
                 </div>
@@ -165,13 +194,13 @@
               <% for(let review of movie.reviews) {%>
                 <div class="card mb-3">
                   <div class="card-body">
-                    <h5>
-                      Rating: <%= review.rating %>/5
+                    <h5 class="card-title">
+                      <%= review.author.username %>
                     </h5>
-                    <h6 class="card-subtitle mb-2 text-muted">
-                      By <%= review.author.username %>
-                    </h6>
-                    <p>
+
+                    <p class="starability-result" data-rating=<%=review.rating %> >
+                    </p>
+                    <p class="card-text">
                       Review: <%= review.body %>
                     </p>
 
@@ -192,30 +221,30 @@
           <div class="col">
             <div class="card h-100">
               <% if(top5Posters[i]) {%>
-                FIRST
+                <!-- FIRST -->
                 <img src="http://image.tmdb.org/t/p/w500/<%= top5Posters[i] %>" class="card-img-top img-fluid"
                   alt="...">
 
                 <% } else if(top5Objects[i].posterPath) {%>
-                  SECOND
+                  <!-- SECOND -->
                   <img src="http://image.tmdb.org/t/p/w500/<%= top5Objects[i].posterPath %>"
                     class="card-img-top img-fluid" alt="...">
 
-                  <% } else if(allPosters[i]) {%> 
-                    THIRD
-                    <img src="http://image.tmdb.org/t/p/w500/<%= allPosters[i] %>"
-                    class="card-img-top img-fluid" alt="...">
-                  <% } else{%>
-                    <img src="data:image/<%=image.img.contentType%>;base64,
+                  <% } else if(allPosters[i]) {%>
+                    <!-- THIRD -->
+                    <img src="http://image.tmdb.org/t/p/w500/<%= allPosters[i] %>" class="card-img-top img-fluid"
+                      alt="...">
+                    <% } else{%>
+                      <img src="data:image/<%=image.img.contentType%>;base64,
                 <%=image.img.data.toString('base64')%>" alt="" class="card-img-top img-fluid">
-                    <% } %>
-                      <div class="card-body">
-                        <h6 class="card-title">
-                          <a style="color: black; text-decoration: none;" href="/movies/<%= top5Objects[i]._id %>">
-                            <%= top5Objects[i].title %>
-                          </a>
-                        </h6>
-                      </div>
+                      <% } %>
+                        <div class="card-body">
+                          <h6 class="card-title">
+                            <a style="color: white; text-decoration: none;" href="/movies/<%= top5Objects[i]._id %>">
+                              <%= top5Objects[i].title %>
+                            </a>
+                          </h6>
+                        </div>
             </div>
           </div>
 

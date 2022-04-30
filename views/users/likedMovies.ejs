@@ -52,7 +52,7 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100">
-  <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
+  <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
       <a class="navbar-brand" href="/movies">MovieStat</a>
 
@@ -74,7 +74,7 @@
                 <option value="<%= sMovie.title %>"></option>
                 <% } %>
             </datalist>
-            <button class="btn btn-sm btn-outline-dark">Search</button>
+            <button class="btn btn-sm btn-outline-light">Search</button>
           </form>
         </div>
 
@@ -96,67 +96,89 @@
   <main>
     <div class="container mt-4">
       <h1>Watched Movies</h1>
-      <% for(let i = 0; i < numOfWatchedMovies; i++) {%>
+      <% if(allWatchedMovies.length===0) {%>
         <div class="card p-2 border-0">
-          <div class="row">
-            <div class="col-md-3 poster">
-              <% if(allWatchedMovies[i].posterPath !== '') {%> 
-                FIRST
-              <img class="card-img-top img-fluid" src="http://image.tmdb.org/t/p/w500/<%= allWatchedMovies[i].posterPath%>"
-                alt="">
-                <% } else if(allWatchedMoviesPosters[i]) {%>
-                  SECOND
-                  <img class="card-img-top img-fluid" src="<%= allWatchedMoviesPosters[i]%>"
-                alt="">
-                  <% } %>  
-            </div>
-            <div class="col-md-9">
-              <div class="card-body d-flex flex-column h-100">
-                <h5 class="card-text">
-                  <a href="/movies/<%= allWatchedMovies[i]._id %>">
-                    <%= allWatchedMovies[i].title%>
-                  </a>
-                </h5>
-                <p class="card-text">
-                  <%= allWatchedMovies[i].overview %>
-                </p>
+          <h5 class="p-2">
+            You don't have any watched movies!
+          </h5>
+        </div>
+        <% } else {%>
+          <% for(let i=0; i < numOfWatchedMovies; i++) {%>
+            <div class="card p-2 border-0">
+              <div class="row">
+                <div class="col-md-3 poster">
+                  <% if(allWatchedMovies[i].posterPath !=='' ) {%>
+                    FIRST
+                    <img class="card-img-top img-fluid"
+                      src="http://image.tmdb.org/t/p/w500/<%= allWatchedMovies[i].posterPath%>" alt="">
+                    <% } else if(allWatchedMoviesPosters[i]) {%>
+                      SECOND
+                      <img class="card-img-top img-fluid" src="<%= allWatchedMoviesPosters[i]%>" alt="">
+                      <% } %>
+                </div>
+                <div class="col-md-9">
+                  <div class="card-body d-flex flex-column h-100">
+                    <h5 class="card-text">
+                      <a href="/movies/<%= allWatchedMovies[i]._id %>">
+                        <%= allWatchedMovies[i].title%>
+                      </a>
+                    </h5>
+                    <p class="card-text">
+                      <%= allWatchedMovies[i].overview %>
+                    </p>
 
-                <form class="mt-auto" action="/removeWatchedMovies/<%= allWatchedMovies[i]._id %>/<%= currentUser._id %>"
-                  method="POST">
-                  <button class="btn btn-sm btn-danger mt-auto">Remove from watch history</button>
-                </form>
+                    <form class="mt-auto"
+                      action="/removeWatchedMovies/<%= allWatchedMovies[i]._id %>/<%= currentUser._id %>" method="POST">
+                      <button class="btn btn-sm btn-danger mt-auto">Remove from watch history</button>
+                    </form>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-        <% } %>
+            <% } %>
+              <% } %>
+
     </div>
 
     <div class="container mt-4">
       <h1>Liked Movies</h1>
-      <% for(let likedMovie of allLikedMovies) {%>
+      <% if(allLikedMovies.length===0) {%>
         <div class="card p-2 border-0">
-          <div class="row">
-            <div class="col-md-3 poster">
-              <img class="card-img-top img-fluid" src="http://image.tmdb.org/t/p/w500/<%= likedMovie.posterPath%>"
-                alt="">
-            </div>
-            <div class="col-md-9">
-              <div class="card-body d-flex flex-column h-100">
-                <h5 class="card-text">
-                  <a href="/movies/<%= likedMovie._id %>">
-                    <%= likedMovie.title%>
-                  </a>
-                </h5>
-                <p class="card-text">
-                  <%= likedMovie.overview %>
-                </p>
-                <a class="btn btn-sm btn-info mt-auto" href="/movies/<%= likedMovie._id %>">Details</a>
+          <h5 class="p-2">
+            You don't have any liked movies!
+          </h5>
+        </div>
+        <% } else {%>
+          <% for(let likedMovie of allLikedMovies) {%>
+            <div class="card p-2 border-0">
+              <div class="row">
+                <div class="col-md-3 poster">
+                  <img class="card-img-top img-fluid" src="http://image.tmdb.org/t/p/w500/<%= likedMovie.posterPath%>"
+                    alt="">
+                </div>
+                <div class="col-md-9">
+                  <div class="card-body d-flex flex-column h-100">
+                    <h5 class="card-text">
+                      <a href="/movies/<%= likedMovie._id %>">
+                        <%= likedMovie.title%>
+                      </a>
+                    </h5>
+                    <p class="card-text">
+                      <%= likedMovie.overview %>
+                    </p>
+                    <form class="mt-auto" action="/removeLikedMovies/<%= likedMovie._id %>/<%= currentUser._id %>"
+                      method="POST">
+                      <button class="btn btn-sm btn-danger mt-auto">
+                        <%-include("../movies/dislike-svgrepo-com.svg") %> Dislike
+                      </button>
+                    </form>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-        <% } %>
+            <% } %>
+              <% } %>
+
     </div>
   </main>
 

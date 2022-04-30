@@ -1,0 +1,43 @@
+<h1>PERSONALIZED RECOMMENDATIONS</h1>
+        <div class="row row-cols-1 row-cols-md-3">
+          <% for(let i=0; i < 20; i++) {%>
+            <div class="card m-2 h-100">
+
+              <div class="col p-2">
+
+                <div class="poster row">
+                  <% if( topRecommendationsObjects[i].posterPath) {%>
+                    FIRST
+                    <img src="http://image.tmdb.org/t/p/w500/<%= topRecommendationsObjects[i].posterPath %>"
+                      class="card-img-top img-fluid" alt="">
+
+                    <% } else if(topRecommendationsPosters[i]) {%>
+                      SECOND
+                      <img src="http://image.tmdb.org/t/p/w500/<%= topRecommendationsPosters[i] %>"
+                        class="card-img-top img-fluid" alt="...">
+
+                      <% } else if(allPosters[i]) {%>
+                        THIRD
+                        <img src="<%= allPosters[i] %>" class="card-img-top img-fluid" alt="">
+                        <% } else {%>
+                          FOURTH
+                          <img src="data:image/<%=image.img.contentType%>;base64,
+                          <%=image.img.data.toString('base64')%>" alt="" class="card-img-top img-fluid">
+                          <% } %>
+                </div>
+
+                <div class="row">
+                  <div class="card-body">
+                    <h6 class="card-title">
+                      <a style="color: black; text-decoration: none;"
+                        href="/movies/<%= topRecommendationsObjects[i]._id %>">
+                        <%= topRecommendationsObjects[i].title %>
+                      </a>
+                    </h6>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <% } %>
+        </div>

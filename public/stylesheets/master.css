@@ -3,6 +3,25 @@ main {
   transition-timing-function: ease-in;
 }
 
+body {
+  background-color: black;
+  color: white;
+}
+
+.card {
+  background-color: black;
+  color: white;
+}
+
+.card body ul li{
+  background-color: black;
+  color: white;
+}
+
+a {
+  color: white;
+}
+
 @keyframes transitionIn {
   from {
     opacity: 0;

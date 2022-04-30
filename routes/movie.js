@@ -1,8 +1,10 @@
 const express = require('express');
+
 const Image = require('../models/image');
 const Movie = require('../models/movies');
 const User = require('../models/user');
 const Poster = require('../models/posters');
+
 const router = express.Router();
 const querystring = require('querystring');
 const url = require('url');
@@ -89,8 +91,6 @@ router.get('/', isLoggedIn, async (req, res) => {
   let allWatchedMovies = [];
   console.log('ALL WATCHED MOVIES:');
   for (let watchedMovie of user.watchedMovies) {
-    // console.log(watchedMovie);
-    // console.log(typeof watchedMovie);
     allWatchedMovies.push(watchedMovie);
   }
 
@@ -120,15 +120,12 @@ router.get('/', isLoggedIn, async (req, res) => {
 
   // Find the posters for all the movies in the movies array:
   let allPosters = [];
+  let allTmdbPosterPaths = [];
   for (let movie of topRecommendations) {
-    console.log(movie);
     const posterObj = await Poster.findOne({ Title: movie });
     if (!posterObj) {
       allPosters.push('');
     } else {
-      console.log(posterObj.Title);
-      console.log(posterObj.Poster);
-      console.log();
       allPosters.push(posterObj.Poster);
     }
   }
@@ -138,6 +135,7 @@ router.get('/', isLoggedIn, async (req, res) => {
   );
   const topRecommendationsPosters = await getMoviePosters(topRecommendations);
 
+
   if (user.likedMovies.length !== 0 || user.watchedMovies.length !== 0) {
     console.log('Has some data available');
     res.render('movies/index', {
@@ -146,6 +144,7 @@ router.get('/', isLoggedIn, async (req, res) => {
       topRecommendationsObjects,
       topRecommendationsPosters,
       allPosters,
+      allTmdbPosterPaths,
     });
   } else {
     console.log('No data');
@@ -204,12 +203,11 @@ router.get('/:id', isLoggedIn, async (req, res) => {
   const currUser = req.user;
   const isLikedMovie = currUser.likedMovies.includes(movie.title);
 
-
   // Find the posters for all the movies in the movies array:
   let allPosters = [];
   for (let movie of top5Objects) {
-    const title = movie.title
-    const posterObj = await Poster.findOne({ Title: title});
+    const title = movie.title;
+    const posterObj = await Poster.findOne({ Title: title });
     if (!posterObj) {
       allPosters.push('');
     } else {
