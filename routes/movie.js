@@ -81,7 +81,6 @@ router.get('/', isLoggedIn, async (req, res) => {
   // first convert that array to json object:
 
   // Here allLikedMovies is an json object
-
   let allLikedMovies = [];
   for (let likedMovie of user.likedMovies) {
     const likedMovieObj = JSON.stringify();
@@ -94,17 +93,17 @@ router.get('/', isLoggedIn, async (req, res) => {
     allWatchedMovies.push(watchedMovie);
   }
 
-  console.log('LIKED MOVIES:');
-  console.log(allLikedMovies);
+  // console.log('LIKED MOVIES:');
+  // console.log(allLikedMovies);
 
   allWatchedMovies = arrayUnique(allWatchedMovies);
-  console.log('WATCHED MOVIES:');
-  console.log(allWatchedMovies);
+  // console.log('WATCHED MOVIES:');
+  // console.log(allWatchedMovies);
 
   // Now merge the arrays allLikedMovies and allWatchedMovies
   let movies = arrayUnique(allLikedMovies.concat(allWatchedMovies));
-  console.log('MOVIES ARRAY:');
-  console.log(movies);
+  // console.log('MOVIES ARRAY:');
+  // console.log(movies);
 
   // CALL NEW METHOD:
   // All the top movie recommendations are stored in this variable
@@ -137,7 +136,7 @@ router.get('/', isLoggedIn, async (req, res) => {
 
 
   if (user.likedMovies.length !== 0 || user.watchedMovies.length !== 0) {
-    console.log('Has some data available');
+    // console.log('Has some data available');
     res.render('movies/index', {
       allMovies,
       image,
@@ -147,7 +146,7 @@ router.get('/', isLoggedIn, async (req, res) => {
       allTmdbPosterPaths,
     });
   } else {
-    console.log('No data');
+    // console.log('No data');
     res.render('users/newUser', { user, allMovies });
   }
 });

@@ -10,6 +10,8 @@ router.get('/register', (req, res) => {
   res.render('users/register');
 });
 
+const findPoster = require('../utils/findPoster');
+
 router.post(
   '/register',
   catchAsync(async (req, res, next) => {
@@ -127,10 +129,57 @@ router.get('/likedMovies/:id', async (req, res) => {
     }
   }
 
+  // FIND ALL THE POSTERS USING API function findPoster:
+
+  // for (let likedMovie of user.likedMovies) {
+  //   console.log('Movie to search: ', likedMovie);
+  //   const movie = await Movie.findOne({ title: likedMovie });
+  //   console.log('After search: ', movie.title, 'and id is ', movie.id);
+  //   const poster = await findPoster(movie.id);
+  //   allLikedMoviesPostersAPI.push(poster);
+  // }
+
+  // console.log();
+  // console.log();
+  // for (let watchedMovie of user.watchedMovies) {
+  //   console.log('Movie to search ', watchedMovie);
+  //   const movie = await Movie.findOne({ title: watchedMovie });
+  //   console.log('After search: ', movie.title, 'and id is ', movie.id);
+  //   const poster = await findPoster(movie.id);
+  //   allWatchedMoviesPostersAPI.push(poster);
+  // }
+
   const numOfLikedMovies = allLikedMovies.length;
   const numOfWatchedMovies = allWatchedMovies.length;
 
   allWatchedMovies = allWatchedMovies.reverse();
+
+  let allLikedMoviesPostersAPI = [];
+  console.log('LIKED MOVIES:');
+  for (let i = 0; i < allLikedMovies.length; i++) {
+    const poster = await findPoster(allLikedMovies[i].id);
+    console.log(poster);
+    allLikedMoviesPostersAPI.push(poster);
+    console.log(allLikedMovies[i].title);
+    console.log('Poster path in DB: ', allLikedMovies[i].posterPath);
+    console.log();
+  }
+  console.log();
+  console.log(
+    '--------------------------------------------------------------------------'
+  );
+  console.log();
+
+  let allWatchedMoviesPostersAPI = [];
+  console.log('WATCHED MOVIES:');
+  for (let i = 0; i < allWatchedMovies.length; i++) {
+    const poster = await findPoster(allWatchedMovies[i].id);
+    allWatchedMoviesPostersAPI.push(poster);
+    console.log(poster);
+    console.log(allWatchedMovies[i].title);
+    console.log('Poster path in DB: ', allWatchedMovies[i].posterPath);
+    console.log();
+  }
 
   res.render('users/likedMovies', {
     user,
@@ -141,6 +190,8 @@ router.get('/likedMovies/:id', async (req, res) => {
     allWatchedMoviesPosters,
     numOfLikedMovies,
     numOfWatchedMovies,
+    allLikedMoviesPostersAPI,
+    allWatchedMoviesPostersAPI,
   });
 });
 
